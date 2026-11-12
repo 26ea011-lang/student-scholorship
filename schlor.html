@@ -1,0 +1,596 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScholarHub - Scholarship Management System</title>
+
+    <!-- INTERNAL CSS -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6fb;
+            color: #222;
+        }
+
+        header {
+            background-color: #172554;
+            color: white;
+            padding: 20px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        header h2 {
+            color: white;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 10px;
+        }
+
+        nav a:hover {
+            color: #93c5fd;
+        }
+
+        .hero {
+            background: linear-gradient(120deg, #1e40af, #6366f1);
+            color: white;
+            text-align: center;
+            padding: 90px 20px;
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            margin: 15px 0 25px;
+        }
+
+        .btn {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 12px 22px;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 12px;
+        }
+
+        .btn:hover {
+            background-color: #1d4ed8;
+        }
+
+        section {
+            padding: 50px 8%;
+        }
+
+        section h1 {
+            text-align: center;
+            color: #172554;
+            margin-bottom: 25px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            border: 1px solid #bbb;
+            border-radius: 5px;
+        }
+
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .card {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 3px 12px #00000015;
+        }
+
+        .card h2 {
+            color: #1e40af;
+            margin-bottom: 12px;
+        }
+
+        .card p {
+            margin: 12px 0;
+            line-height: 1.5;
+        }
+
+        form {
+            background-color: white;
+            max-width: 650px;
+            margin: auto;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 3px 12px #00000015;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        textarea {
+            min-height: 100px;
+        }
+
+        #message, #adminMessage {
+            text-align: center;
+            margin-top: 15px;
+            color: green;
+            font-weight: bold;
+        }
+
+        #applicationList {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #dbeafe;
+        }
+
+        #admin {
+            background-color: #e8efff;
+        }
+
+        footer {
+            background-color: #172554;
+            color: white;
+            text-align: center;
+            padding: 25px;
+        }
+
+        @media (max-width: 700px) {
+            header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .filters {
+                flex-direction: column;
+            }
+
+            .hero h1 {
+                font-size: 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVIGATION -->
+    <header>
+        <h2>🎓 ScholarHub</h2>
+
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#scholarships">Scholarships</a>
+            <a href="#apply">Apply</a>
+            <a href="#applications">My Applications</a>
+            <a href="#admin">Admin</a>
+        </nav>
+    </header>
+
+    <!-- HOME -->
+    <section class="hero" id="home">
+        <h1>Welcome to ScholarHub</h1>
+        <h2>Find Scholarships for Your Future</h2>
+        <p>Explore scholarship opportunities and apply easily.</p>
+
+        <a href="#scholarships" class="btn">
+            Explore Scholarships
+        </a>
+    </section>
+
+    <!-- SCHOLARSHIPS -->
+    <section id="scholarships">
+        <h1>Available Scholarships</h1>
+
+        <div class="filters">
+            <input type="text" id="search"
+                   placeholder="Search scholarships...">
+
+            <select id="category">
+                <option value="all">All Categories</option>
+                <option value="Merit">Merit</option>
+                <option value="Need-based">Need-based</option>
+                <option value="Special">Special</option>
+            </select>
+        </div>
+
+        <div id="scholarshipList" class="cards"></div>
+    </section>
+
+    <!-- APPLICATION FORM -->
+    <section id="apply">
+        <h1>Student Application Form</h1>
+
+        <form id="applicationForm">
+
+            <label>Student Name</label>
+            <input type="text" id="name" required>
+
+            <label>Email Address</label>
+            <input type="email" id="email" required>
+
+            <label>Register Number</label>
+            <input type="text" id="register" required>
+
+            <label>Department</label>
+            <select id="department" required>
+                <option value="">Select Department</option>
+                <option>ECA</option>
+                <option>CSE</option>
+                <option>ECE</option>
+                <option>EEE</option>
+                <option>IT</option>
+            </select>
+
+            <label>Select Scholarship</label>
+            <select id="scholarship" required>
+                <option value="">Select Scholarship</option>
+                <option>Merit Excellence Scholarship</option>
+                <option>Student Support Scholarship</option>
+                <option>First Generation Learner Grant</option>
+            </select>
+
+            <label>Academic Percentage</label>
+            <input type="number" id="percentage"
+                   min="0" max="100" step="0.01" required>
+
+            <label>Reason for Applying</label>
+            <textarea id="reason" required></textarea>
+
+            <button type="submit" class="btn">
+                Submit Application
+            </button>
+
+            <p id="message"></p>
+        </form>
+    </section>
+
+    <!-- APPLICATION DETAILS -->
+    <section id="applications">
+        <h1>My Applications</h1>
+        <div id="applicationList"></div>
+    </section>
+
+    <!-- ADMIN DASHBOARD -->
+    <section id="admin">
+        <h1>Admin Dashboard</h1>
+
+        <label>Select Application</label>
+        <select id="adminApplication"></select>
+
+        <label>Update Application Status</label>
+        <select id="newStatus">
+            <option>Under Review</option>
+            <option>Approved</option>
+            <option>Rejected</option>
+        </select>
+
+        <button type="button" class="btn" id="updateButton">
+            Update Status
+        </button>
+
+        <p id="adminMessage"></p>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <h2>ScholarHub 🎓</h2>
+        <p>Scholarship Management System for Students</p>
+        <p>Academic Mini Project</p>
+    </footer>
+
+
+    <!-- INTERNAL JAVASCRIPT -->
+    <script>
+
+        // Scholarship information
+        const scholarships = [
+            {
+                name: "Merit Excellence Scholarship",
+                category: "Merit",
+                amount: 25000,
+                description: "For students with good academic performance."
+            },
+            {
+                name: "Student Support Scholarship",
+                category: "Need-based",
+                amount: 15000,
+                description: "Financial support for students."
+            },
+            {
+                name: "First Generation Learner Grant",
+                category: "Special",
+                amount: 20000,
+                description: "Support for first generation college learners."
+            }
+        ];
+
+
+        // Get saved applications
+        let applications =
+            JSON.parse(localStorage.getItem("applications")) || [];
+
+
+        // DISPLAY SCHOLARSHIPS
+        function displayScholarships() {
+
+            let list =
+                document.getElementById("scholarshipList");
+
+            list.innerHTML = "";
+
+            let searchValue =
+                document.getElementById("search").value.toLowerCase();
+
+            let categoryValue =
+                document.getElementById("category").value;
+
+            scholarships.forEach(function(s) {
+
+                let matchesSearch =
+                    s.name.toLowerCase().includes(searchValue);
+
+                let matchesCategory =
+                    categoryValue === "all" ||
+                    s.category === categoryValue;
+
+                if (matchesSearch && matchesCategory) {
+
+                    list.innerHTML += `
+                        <div class="card">
+                            <h2>${s.name}</h2>
+                            <p>Category: ${s.category}</p>
+                            <p>${s.description}</p>
+                            <h3>Amount: ₹${s.amount}</h3>
+                        </div>
+                    `;
+                }
+            });
+
+            if (list.innerHTML === "") {
+                list.innerHTML = "<p>No scholarships found.</p>";
+            }
+        }
+
+
+        // SEARCH EVENT
+        document.getElementById("search")
+        .addEventListener("input", displayScholarships);
+
+
+        // CATEGORY CHANGE EVENT
+        document.getElementById("category")
+        .addEventListener("change", displayScholarships);
+
+
+        // DISPLAY APPLICATIONS
+        function displayApplications() {
+
+            let list =
+                document.getElementById("applicationList");
+
+            let adminSelect =
+                document.getElementById("adminApplication");
+
+            if (applications.length === 0) {
+
+                list.innerHTML =
+                    "<p>No applications submitted yet.</p>";
+
+                adminSelect.innerHTML =
+                    "<option value=''>No applications</option>";
+
+                return;
+            }
+
+            let table = `
+                <table>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Register Number</th>
+                        <th>Scholarship</th>
+                        <th>Status</th>
+                    </tr>
+            `;
+
+            adminSelect.innerHTML = "";
+
+            applications.forEach(function(app, index) {
+
+                table += `
+                    <tr>
+                        <td>${app.name}</td>
+                        <td>${app.email}</td>
+                        <td>${app.register}</td>
+                        <td>${app.scholarship}</td>
+                        <td>${app.status}</td>
+                    </tr>
+                `;
+
+                adminSelect.innerHTML += `
+                    <option value="${index}">
+                        ${app.name} - ${app.scholarship}
+                    </option>
+                `;
+            });
+
+            table += "</table>";
+
+            list.innerHTML = table;
+        }
+
+
+        // FORM SUBMIT EVENT
+        document.getElementById("applicationForm")
+        .addEventListener("submit", function(event) {
+
+            event.preventDefault();
+
+            let name =
+                document.getElementById("name").value.trim();
+
+            let email =
+                document.getElementById("email").value.trim();
+
+            let register =
+                document.getElementById("register").value.trim();
+
+            let department =
+                document.getElementById("department").value;
+
+            let scholarship =
+                document.getElementById("scholarship").value;
+
+            let percentage =
+                Number(document.getElementById("percentage").value);
+
+            let reason =
+                document.getElementById("reason").value.trim();
+
+
+            if (!name || !email || !register ||
+                !department || !scholarship || !reason ||
+                percentage < 0 || percentage > 100) {
+
+                document.getElementById("message").textContent =
+                    "Please enter valid details.";
+
+                return;
+            }
+
+
+            // Create application
+            let application = {
+                name: name,
+                email: email,
+                register: register,
+                department: department,
+                scholarship: scholarship,
+                percentage: percentage,
+                reason: reason,
+                status: "Under Review"
+            };
+
+
+            // Save application
+            applications.push(application);
+
+            localStorage.setItem(
+                "applications",
+                JSON.stringify(applications)
+            );
+
+
+            document.getElementById("message").textContent =
+                "Application submitted successfully!";
+
+
+            // Clear form
+            document.getElementById("applicationForm").reset();
+
+
+            // Display updated applications
+            displayApplications();
+
+        });
+
+
+        // ADMIN UPDATE EVENT
+        document.getElementById("updateButton")
+        .addEventListener("click", function() {
+
+            let index =
+                document.getElementById("adminApplication").value;
+
+            let newStatus =
+                document.getElementById("newStatus").value;
+
+
+            if (index === "" || !applications[index]) {
+
+                document.getElementById("adminMessage").textContent =
+                    "No application available.";
+
+                return;
+            }
+
+
+            applications[index].status = newStatus;
+
+
+            localStorage.setItem(
+                "applications",
+                JSON.stringify(applications)
+            );
+
+
+            document.getElementById("adminMessage").textContent =
+                "Status updated successfully!";
+
+
+            displayApplications();
+
+        });
+
+
+        // INITIAL PAGE DISPLAY
+        displayScholarships();
+        displayApplications();
+
+    </script>
+
+</body>
+</html>
